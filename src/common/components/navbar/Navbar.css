@@ -1,0 +1,15 @@
+#navbar {
+  background-color: #3f51b5;
+}
+
+.navbar-search {
+  background-color: #5c6bc0;
+  overflow: hidden;
+}
+
+.navbar-search-icon {
+  position: absolute;
+  top: 8px;
+  left: 16px;
+  z-index: 1;
+}
