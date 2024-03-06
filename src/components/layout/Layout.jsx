@@ -1,12 +1,15 @@
 import React from "react";
-import { Navbar } from "../../common/components/navbar/Navbar";
+import { Navbar } from "../../common/components/Navbar/Navbar";
 import { Outlet } from "react-router-dom";
+import "./Layout.css";
 
 export const Layout = () => {
   return (
     <div id="app">
       <Navbar />
-      <Outlet />
+      <div id="children">
+        <Outlet />
+      </div>
     </div>
   );
 };
