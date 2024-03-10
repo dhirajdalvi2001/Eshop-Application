@@ -11,9 +11,18 @@ import {
   Typography,
 } from "@mui/material";
 import "./Navbar.css";
+import { clearTokenCookie, getTokenCookie } from "../../../utils/helperFunc";
+import { useNavigate } from "react-router-dom";
 
 export const Navbar = () => {
+  const token = getTokenCookie();
+  const navigate = useNavigate();
   const [searchValue, setSearchValue] = React.useState("");
+
+  function logoutHandler() {
+    clearTokenCookie();
+    navigate("/login");
+  }
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" id="navbar">
@@ -33,7 +42,14 @@ export const Navbar = () => {
                 sx={{ display: { xs: "none", sm: "block" } }}
                 fontSize="16px"
               >
-                upGrad E-Shop
+                <Link
+                  href="/"
+                  color="#fff"
+                  fontSize="14px"
+                  style={{ textDecoration: "none" }}
+                >
+                  upGrad E-Shop
+                </Link>
               </Typography>
             </Box>
             <Box width="20%" position="relative">
@@ -61,20 +77,22 @@ export const Navbar = () => {
               alignItems="center"
               gap="26px"
             >
-              {/* User Not Logged In */}
-              <React.Fragment>
-                <Link href="/login" color="#fff" fontSize="14px">
-                  Login
-                </Link>
-                <Link href="/signup" color="#fff" fontSize="14px">
-                  Sign Up
-                </Link>
-              </React.Fragment>
-              {/* User Not Logged In */}
-
               <Link href="/" color="#fff" fontSize="14px">
                 Home
               </Link>
+              {/* User Not Logged In */}
+              {!token && (
+                <React.Fragment>
+                  <Link href="/login" color="#fff" fontSize="14px">
+                    Login
+                  </Link>
+                  <Link href="/signup" color="#fff" fontSize="14px">
+                    Sign Up
+                  </Link>
+                </React.Fragment>
+              )}
+              {/* User Not Logged In */}
+
               {/* User is Admin */}
               <Link href="/" color="#fff" fontSize="14px">
                 Add Product
@@ -86,6 +104,7 @@ export const Navbar = () => {
                   backgroundColor: "#F50057",
                   ":hover": { backgroundColor: "#ff2370" },
                 }}
+                onClick={logoutHandler}
               >
                 Logout
               </Button>

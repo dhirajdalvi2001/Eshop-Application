@@ -1,14 +1,46 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Login.css";
 import { Footer } from "../../common/components/Footer/Footer";
 import { Button, IconButton, TextField, Typography } from "@mui/material";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
+import { customFetch } from "../../api/axios";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { getTokenCookie, setTokenCookie } from "../../utils/helperFunc";
+
+const initialFormData = {
+  username: "",
+  password: "",
+};
 
 const Login = () => {
-  const [formData, setFormData] = useState({});
+  const navigate = useNavigate();
+  const token = getTokenCookie();
+  const [formData, setFormData] = useState(initialFormData);
   const handleChange = (value, key) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
   };
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const result = await customFetch.post("/auth/signin", formData);
+    if (result.status === 200) {
+      navigate("/");
+      setTokenCookie(result.data.token);
+      toast.success("User logged in successfully");
+    }
+  };
+
+  // Redirect to root if user's already logged in
+  useEffect(() => {
+    if (token) {
+      navigate("/");
+    }
+  }, [token]);
+
+  if (token) {
+    return null;
+  }
+
   return (
     <div id="login">
       <IconButton
@@ -25,8 +57,9 @@ const Login = () => {
           type="email"
           label="Email Address"
           value={formData?.email}
-          onChange={(e) => handleChange(e.target.value, "email")}
+          onChange={(e) => handleChange(e.target.value, "username")}
           placeholder="Email Address"
+          autoComplete="off"
           required
         />
         <TextField
@@ -35,9 +68,15 @@ const Login = () => {
           value={formData?.password}
           onChange={(e) => handleChange(e.target.value, "password")}
           placeholder="Password"
+          autoComplete="off"
           required
         />
-        <Button variant="contained" type="submit" className="button">
+        <Button
+          variant="contained"
+          type="submit"
+          className="button"
+          onClick={handleSubmit}
+        >
           Sign In
         </Button>
         <a href="/signup" style={{ fontSize: "14px" }}>
