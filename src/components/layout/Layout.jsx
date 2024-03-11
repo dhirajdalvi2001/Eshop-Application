@@ -1,5 +1,5 @@
 import React, { createContext, useState } from "react";
-import { Navbar } from "../../common/components/Navbar/Navbar";
+import { TopNavbar } from "../../common/components/TopNavbar/TopNavbar";
 import { Outlet } from "react-router-dom";
 import "./Layout.css";
 
@@ -10,7 +10,7 @@ export const Layout = () => {
   return (
     <SearchContext.Provider value={{ searchValue }}>
       <div id="app">
-        <Navbar searchValue={searchValue} setSearchValue={setSearchValue} />
+        <TopNavbar searchValue={searchValue} setSearchValue={setSearchValue} />
         <div id="children">
           <Outlet />
         </div>

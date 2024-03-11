@@ -10,11 +10,11 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import "./Navbar.css";
+import "./TopNavbar.css";
 import { clearTokenCookie, getTokenCookie } from "../../../utils/helperFunc";
 import { useNavigate } from "react-router-dom";
 
-export const Navbar = ({ searchValue, setSearchValue }) => {
+export const TopNavbar = ({ searchValue, setSearchValue }) => {
   const token = getTokenCookie();
   const navigate = useNavigate();
 
