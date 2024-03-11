@@ -52,6 +52,7 @@ export const Home = () => {
         if (productName.includes(searchTerm)) {
           return product;
         }
+        return null;
       })
       .filter(Boolean);
     setFilteredProducts(filteredProducts);
