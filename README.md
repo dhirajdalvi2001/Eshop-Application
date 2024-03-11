@@ -1,5 +1,6 @@
 # EShop Application a Full Stack application 
 
-but the repository consists of the Frontend codebase only
+But the repository consists of the Frontend codebase only
 
 
+### Hosted here: https://eshop-application.vercel.app/  
