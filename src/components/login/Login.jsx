@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getTokenCookie, setTokenCookie } from "../../utils/helperFunc";
 import { jwtDecode } from "jwt-decode";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const initialFormData = {
   username: "",
@@ -17,19 +18,43 @@ const initialFormData = {
 const Login = () => {
   const navigate = useNavigate();
   const token = getTokenCookie();
+  const axiosPrivate = useAxiosPrivate();
   const [formData, setFormData] = useState(initialFormData);
   const handleChange = (value, key) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
   };
+
+  async function fetchUserRole(userEmail, token) {
+    try {
+      const usersData = await axiosPrivate.get("/users", {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+      const userFound = usersData.data.filter(
+        (user) => user.email === userEmail
+      )[0];
+      const userRole = userFound.roles[0].name;
+      localStorage.setItem("isAdmin", userRole === "ADMIN");
+    } catch (error) {
+      if (error.response.status === 403) {
+        // Remove isAdmin if exists
+        localStorage.removeItem("isAdmin");
+      }
+    } finally {
+      toast.success("User logged in successfully");
+      navigate("/");
+    }
+  }
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const result = await customFetch.post("/auth/signin", formData);
     if (result.status === 200) {
-      navigate("/");
       setTokenCookie(result.data.token);
       const decoded = jwtDecode(result.data.token);
       localStorage.setItem("email", decoded.sub);
-      toast.success("User logged in successfully");
+      fetchUserRole(decoded.sub, result.data.token);
     }
   };
 

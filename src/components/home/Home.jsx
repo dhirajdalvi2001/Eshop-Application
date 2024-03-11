@@ -12,22 +12,34 @@ import {
   CardActions,
   CardContent,
   CardMedia,
+  IconButton,
   Skeleton,
   Typography,
 } from "@mui/material";
 import { SearchContext } from "../layout/Layout";
+import { Dropdown } from "../../common/components/Dropdown/Dropdown";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export const Home = () => {
   const { searchValue } = useContext(SearchContext);
   const token = getTokenCookie();
   const navigate = useNavigate();
   const axiosPrivate = useAxiosPrivate();
+  const isAdmin = localStorage.getItem("isAdmin");
   const [selectedCategory, setSelectedCategory] = useState("ALL");
   const [categories, setCategories] = useState(["ALL"]);
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [categoriesLoading, setCategoriesLoading] = useState(true);
   const [productsLoading, setProductsLoading] = useState(true);
+  const [selectedSortOption, setSelectedSortOption] = useState("Default");
+  const sortingOptions = [
+    "Default",
+    "Price: High to Low",
+    "Price: Low to High",
+    "Newest",
+  ];
 
   async function fetchData() {
     setCategoriesLoading(true);
@@ -36,15 +48,27 @@ export const Home = () => {
     setCategories((prev) => [...prev, ...categoriesData.data]);
     const productsData = await axiosPrivate.get("/products");
     setProducts(productsData.data);
+    setFilteredProducts(productsData.data);
     setCategoriesLoading(false);
     setProductsLoading(false);
   }
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  useEffect(() => {
+  function sortAscending() {
+    const sortedProducts = [...products].sort((a, b) => a.price - b.price);
+    setFilteredProducts(sortedProducts);
+  }
+  function sortDescending() {
+    const sortedProducts = [...products].sort((a, b) => b.price - a.price);
+    setFilteredProducts(sortedProducts);
+  }
+  function delayedCall(func) {
+    setProductsLoading(true);
+    setTimeout(() => {
+      func();
+      setProductsLoading(false);
+    }, 500);
+  }
+  function searchProducts() {
     const filteredProducts = products
       .map((product) => {
         const productName = product.name?.toLowerCase();
@@ -56,18 +80,40 @@ export const Home = () => {
       })
       .filter(Boolean);
     setFilteredProducts(filteredProducts);
+  }
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    products?.length > 0 && delayedCall(searchProducts);
   }, [searchValue]);
+
+  useEffect(() => {
+    if (selectedSortOption) {
+      const lowerCasedSort = selectedSortOption.toLowerCase();
+      const sortArray = lowerCasedSort.split(" ")[1];
+      if (lowerCasedSort.startsWith("price")) {
+        if (sortArray === "high") {
+          delayedCall(sortDescending);
+        } else if (sortArray === "low") {
+          delayedCall(sortAscending);
+        }
+      }
+    }
+  }, [selectedSortOption]);
 
   useEffect(() => {
     if (selectedCategory && products.length > 0) {
       if (selectedCategory === "ALL") {
-        setFilteredProducts(products);
+        delayedCall(() => setFilteredProducts(products));
       } else {
         let filteredProducts = [];
         filteredProducts = products.filter(
           (product) => product.category === selectedCategory
         );
-        setFilteredProducts(filteredProducts);
+        delayedCall(() => setFilteredProducts(filteredProducts));
       }
     }
   }, [selectedCategory, products]);
@@ -123,6 +169,21 @@ export const Home = () => {
           })
         )}
       </ToggleButtonGroup>
+      <div
+        style={{
+          margin: "20px 100px",
+          width: "260px",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <Typography variant="caption">Sort By</Typography>
+        <Dropdown
+          options={sortingOptions}
+          value={selectedSortOption}
+          setValue={setSelectedSortOption}
+        />
+      </div>
       <div className="products-container">
         {productsLoading ? (
           <>
@@ -169,10 +230,26 @@ export const Home = () => {
                     {product.description}
                   </Typography>
                 </CardContent>
-                <CardActions>
+                <CardActions
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
                   <Button variant="contained" size="small" className="button">
                     BUY
                   </Button>
+                  {isAdmin === "true" && (
+                    <div>
+                      <IconButton>
+                        <EditIcon style={{ width: "20px", height: "20px" }} />
+                      </IconButton>
+                      <IconButton>
+                        <DeleteIcon style={{ width: "20px", height: "20px" }} />
+                      </IconButton>
+                    </div>
+                  )}
                 </CardActions>
               </Card>
             );

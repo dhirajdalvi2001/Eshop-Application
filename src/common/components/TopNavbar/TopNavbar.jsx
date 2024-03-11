@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import SearchIcon from "@mui/icons-material/Search";
 import {
@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 export const TopNavbar = ({ searchValue, setSearchValue }) => {
   const token = getTokenCookie();
   const navigate = useNavigate();
+  const isAdmin = localStorage.getItem("isAdmin");
 
   function logoutHandler() {
     clearTokenCookie();
@@ -77,9 +78,11 @@ export const TopNavbar = ({ searchValue, setSearchValue }) => {
               alignItems="center"
               gap="26px"
             >
-              <Link href="/" color="#fff" fontSize="14px">
-                Home
-              </Link>
+              {token && (
+                <Link href="/" color="#fff" fontSize="14px">
+                  Home
+                </Link>
+              )}
               {/* User Not Logged In */}
               {!token && (
                 <React.Fragment>
@@ -94,9 +97,11 @@ export const TopNavbar = ({ searchValue, setSearchValue }) => {
               {/* User Not Logged In */}
 
               {/* User is Admin */}
-              <Link href="/" color="#fff" fontSize="14px">
-                Add Product
-              </Link>
+              {isAdmin === "true" && (
+                <Link href="/" color="#fff" fontSize="14px">
+                  Add Product
+                </Link>
+              )}
               {/* User is Admin */}
               {token && (
                 <Button

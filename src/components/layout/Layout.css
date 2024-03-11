@@ -1,8 +1,9 @@
 #app {
+  position: relative;
   height: 100vh;
 }
 #children {
   position: relative;
-  margin-top: 64px;
-  height: 92%;
+  padding-top: 64px;
+  height: 90%;
 }
