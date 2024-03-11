@@ -1,0 +1,27 @@
+.active-category-tab {
+  color: #8e907f !important;
+  background-color: #e1e0e1 !important;
+}
+.category-tab {
+  background-color: white !important;
+  color: #cccccc !important;
+}
+.products-container {
+  margin: 20px auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  gap: 12px;
+}
+.product-card {
+  width: 320px;
+}
+@media screen and (max-width: 500px) {
+  .products-container {
+    display: flex;
+    flex-direction: column;
+  }
+  .product-card {
+    width: 250px;
+  }
+}

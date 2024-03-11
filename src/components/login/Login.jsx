@@ -7,6 +7,7 @@ import { customFetch } from "../../api/axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getTokenCookie, setTokenCookie } from "../../utils/helperFunc";
+import { jwtDecode } from "jwt-decode";
 
 const initialFormData = {
   username: "",
@@ -26,6 +27,8 @@ const Login = () => {
     if (result.status === 200) {
       navigate("/");
       setTokenCookie(result.data.token);
+      const decoded = jwtDecode(result.data.token);
+      localStorage.setItem("email", decoded.sub);
       toast.success("User logged in successfully");
     }
   };

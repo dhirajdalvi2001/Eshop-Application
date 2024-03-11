@@ -14,15 +14,15 @@ import "./Navbar.css";
 import { clearTokenCookie, getTokenCookie } from "../../../utils/helperFunc";
 import { useNavigate } from "react-router-dom";
 
-export const Navbar = () => {
+export const Navbar = ({ searchValue, setSearchValue }) => {
   const token = getTokenCookie();
   const navigate = useNavigate();
-  const [searchValue, setSearchValue] = React.useState("");
 
   function logoutHandler() {
     clearTokenCookie();
     navigate("/login");
   }
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" id="navbar">
@@ -98,16 +98,18 @@ export const Navbar = () => {
                 Add Product
               </Link>
               {/* User is Admin */}
-              <Button
-                variant="primary"
-                sx={{
-                  backgroundColor: "#F50057",
-                  ":hover": { backgroundColor: "#ff2370" },
-                }}
-                onClick={logoutHandler}
-              >
-                Logout
-              </Button>
+              {token && (
+                <Button
+                  variant="primary"
+                  sx={{
+                    backgroundColor: "#F50057",
+                    ":hover": { backgroundColor: "#ff2370" },
+                  }}
+                  onClick={logoutHandler}
+                >
+                  Logout
+                </Button>
+              )}
             </Box>
           </Box>
         </Toolbar>

@@ -18,6 +18,10 @@ export function getTokenCookie() {
   return null;
 }
 export function clearTokenCookie() {
+  localStorage.removeItem("email");
   document.cookie =
     "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; secure; path=/";
+}
+export function formatToIndianCurrency(number) {
+  return "₹ " + number.toLocaleString("en-IN");
 }
