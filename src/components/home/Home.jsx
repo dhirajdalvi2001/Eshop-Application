@@ -12,14 +12,21 @@ import {
   CardActions,
   CardContent,
   CardMedia,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   IconButton,
   Skeleton,
+  Slide,
   Typography,
 } from "@mui/material";
 import { SearchContext } from "../layout/Layout";
 import { Dropdown } from "../../common/components/Dropdown/Dropdown";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { toast } from "react-toastify";
 
 export const Home = () => {
   const { searchValue } = useContext(SearchContext);
@@ -33,7 +40,10 @@ export const Home = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [categoriesLoading, setCategoriesLoading] = useState(true);
   const [productsLoading, setProductsLoading] = useState(true);
+  const [deleteId, setDeleteId] = useState(null);
+  const [deleteProductName, setDeleteProductName] = useState(null);
   const [selectedSortOption, setSelectedSortOption] = useState("Default");
+  const [callFetchProducts, setCallFetchProducts] = useState(0);
   const sortingOptions = [
     "Default",
     "Price: High to Low",
@@ -42,15 +52,30 @@ export const Home = () => {
   ];
 
   async function fetchData() {
-    setCategoriesLoading(true);
     setProductsLoading(true);
-    const categoriesData = await axiosPrivate.get("/products/categories");
-    setCategories((prev) => [...prev, ...categoriesData.data]);
+    if (categories.length <= 1) {
+      setCategoriesLoading(true);
+      const categoriesData = await axiosPrivate.get("/products/categories");
+      setCategories((prev) => [...prev, ...categoriesData.data]);
+      setCategoriesLoading(false);
+    }
     const productsData = await axiosPrivate.get("/products");
     setProducts(productsData.data);
     setFilteredProducts(productsData.data);
-    setCategoriesLoading(false);
     setProductsLoading(false);
+  }
+  async function deleteProduct() {
+    try {
+      const result = await axiosPrivate.delete(`/products/${deleteId}`);
+      if (result.status === 204) {
+        toast.success(`Product ${deleteProductName} deleted successfully`);
+        setDeleteId(null);
+        setDeleteProductName(null);
+        setCallFetchProducts((prev) => prev + 1);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   function sortAscending() {
@@ -81,10 +106,14 @@ export const Home = () => {
       .filter(Boolean);
     setFilteredProducts(filteredProducts);
   }
+  function handleClose() {
+    setDeleteId(null);
+    setDeleteProductName(null);
+  }
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [callFetchProducts]);
 
   useEffect(() => {
     products?.length > 0 && delayedCall(searchProducts);
@@ -242,10 +271,17 @@ export const Home = () => {
                   </Button>
                   {isAdmin === "true" && (
                     <div>
-                      <IconButton>
+                      <IconButton
+                        onClick={() => navigate(`/edit-product/${product.id}`)}
+                      >
                         <EditIcon style={{ width: "20px", height: "20px" }} />
                       </IconButton>
-                      <IconButton>
+                      <IconButton
+                        onClick={() => {
+                          setDeleteId(product.id);
+                          setDeleteProductName(product.name);
+                        }}
+                      >
                         <DeleteIcon style={{ width: "20px", height: "20px" }} />
                       </IconButton>
                     </div>
@@ -260,6 +296,29 @@ export const Home = () => {
           </Typography>
         )}
       </div>
+      <Dialog
+        open={deleteId ? true : null}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleClose}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle>Confirm deletion of product!</DialogTitle>
+        <DialogContent style={{ margin: "5px auto" }}>
+          <DialogContentText id="alert-dialog-slide-description">
+            Are you sure you want to delete the product?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={deleteProduct} variant="contained">
+            Ok
+          </Button>
+          <Button onClick={handleClose}>Cancel</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});

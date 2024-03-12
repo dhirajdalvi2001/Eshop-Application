@@ -3,6 +3,11 @@
   --light-blue: #5c6bc0;
   --red: #f50057;
   --light-red: #ff2370;
+  --toastify-color-success: #07bc0c !important;
+  --toastify-text-color-success: #07bc0c !important;
+  --toastify-color-light: #07bc0c !important;
+  --toastify-text-color-light: #fff !important;
+  --toastify-icon-color-success:  #dadada !important;
 }
 
 body {

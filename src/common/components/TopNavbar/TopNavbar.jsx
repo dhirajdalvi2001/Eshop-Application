@@ -98,7 +98,7 @@ export const TopNavbar = ({ searchValue, setSearchValue }) => {
 
               {/* User is Admin */}
               {isAdmin === "true" && (
-                <Link href="/" color="#fff" fontSize="14px">
+                <Link href="/add-product" color="#fff" fontSize="14px">
                   Add Product
                 </Link>
               )}
