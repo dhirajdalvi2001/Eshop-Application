@@ -1,0 +1,53 @@
+.active-step-2 {
+  margin: auto;
+  padding: 20px auto;
+  background-color: #ffffff;
+  width: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+}
+.select-address {
+  width: 100%;
+}
+.address-form {
+  margin: auto;
+  padding-bottom: 40px;
+  min-width: 300px;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+}
+.active-steps-2-buttons-group {
+  margin: auto;
+  display: flex;
+  gap: 12px;
+}
+.active-step-3 {
+  margin: 10px auto;
+  padding: 20px auto;
+  background-color: #ffffff;
+  width: 80%;
+  display: flex;
+  position: relative;
+}
+.step-3-card {
+  padding: 30px 10px;
+}
+.step-3-product-details {
+  width: 60%;
+  border-right: 2px solid #ececec;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.step-3-address-details {
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}

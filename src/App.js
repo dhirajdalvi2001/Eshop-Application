@@ -6,6 +6,7 @@ import { Layout } from "./components/layout/Layout";
 import Login from "./components/login/Login";
 import { SignUp } from "./components/signup/SignUp";
 import { AddProduct } from "./components/addProduct/AddProduct";
+import Product from "./components/Product/Product";
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,7 @@ const router = createBrowserRouter([
       },
       { path: "/add-product", element: <AddProduct /> },
       { path: "/edit-product/:productId", element: <AddProduct /> },
+      { path: "/product/:productId", element: <Product/> },
       { path: "/login", element: <Login /> },
       { path: "/signup", element: <SignUp /> },
     ],

@@ -266,7 +266,12 @@ export const Home = () => {
                     alignItems: "center",
                   }}
                 >
-                  <Button variant="contained" size="small" className="button">
+                  <Button
+                    variant="contained"
+                    size="small"
+                    className="button"
+                    onClick={() => navigate(`/product/${product.id}`)}
+                  >
                     BUY
                   </Button>
                   {isAdmin === "true" && (

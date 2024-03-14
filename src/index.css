@@ -7,7 +7,7 @@
   --toastify-text-color-success: #07bc0c !important;
   --toastify-color-light: #07bc0c !important;
   --toastify-text-color-light: #fff !important;
-  --toastify-icon-color-success:  #dadada !important;
+  --toastify-icon-color-success: #dadada !important;
 }
 
 body {
@@ -18,4 +18,10 @@ body {
 }
 .hyperlink {
   font-size: 12px;
+}
+.flex {
+  display: flex;
+}
+.flex-col {
+  flex-direction: column;
 }
