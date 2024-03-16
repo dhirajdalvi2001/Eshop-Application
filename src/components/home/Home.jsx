@@ -1,10 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import { formatToIndianCurrency, getTokenCookie } from "../../utils/helperFunc";
-import { useNavigate } from "react-router-dom";
-import ToggleButton from "@mui/material/ToggleButton";
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import "./Home.css";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import {
   Box,
   Button,
@@ -20,18 +15,26 @@ import {
   IconButton,
   Skeleton,
   Slide,
-  Typography,
+  Typography
 } from "@mui/material";
-import { SearchContext } from "../layout/Layout";
-import { Dropdown } from "../../common/components/Dropdown/Dropdown";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import React, { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { Dropdown } from "../../common/components/Dropdown";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import { formatToIndianCurrency, getTokenCookie } from "../../utils/helperFunc";
+import { SearchContext } from "../layout/Layout";
+import "./Home.css";
 
 export const Home = () => {
   const { searchValue } = useContext(SearchContext);
-  const token = getTokenCookie();
+
   const navigate = useNavigate();
+
+  const token = getTokenCookie();
+
   const axiosPrivate = useAxiosPrivate();
   const isAdmin = localStorage.getItem("isAdmin");
   const [selectedCategory, setSelectedCategory] = useState("ALL");
@@ -44,12 +47,7 @@ export const Home = () => {
   const [deleteProductName, setDeleteProductName] = useState(null);
   const [selectedSortOption, setSelectedSortOption] = useState("Default");
   const [callFetchProducts, setCallFetchProducts] = useState(0);
-  const sortingOptions = [
-    "Default",
-    "Price: High to Low",
-    "Price: Low to High",
-    "Newest",
-  ];
+  const sortingOptions = ["Default", "Price: High to Low", "Price: Low to High", "Newest"];
 
   async function fetchData() {
     setProductsLoading(true);
@@ -139,9 +137,7 @@ export const Home = () => {
         delayedCall(() => setFilteredProducts(products));
       } else {
         let filteredProducts = [];
-        filteredProducts = products.filter(
-          (product) => product.category === selectedCategory
-        );
+        filteredProducts = products.filter((product) => product.category === selectedCategory);
         delayedCall(() => setFilteredProducts(filteredProducts));
       }
     }
@@ -169,9 +165,8 @@ export const Home = () => {
         style={{
           width: "100%",
           display: "flex",
-          justifyContent: "center",
-        }}
-      >
+          justifyContent: "center"
+        }}>
         {categoriesLoading ? (
           <div style={{ display: "flex", gap: "10px" }}>
             {Array(3)
@@ -187,11 +182,8 @@ export const Home = () => {
                 key={category}
                 value={category}
                 className={`${
-                  selectedCategory === category
-                    ? "active-category-tab"
-                    : "category-tab"
-                }`}
-              >
+                  selectedCategory === category ? "active-category-tab" : "category-tab"
+                }`}>
                 {category}
               </ToggleButton>
             );
@@ -203,9 +195,8 @@ export const Home = () => {
           margin: "20px 100px",
           width: "260px",
           display: "flex",
-          flexDirection: "column",
-        }}
-      >
+          flexDirection: "column"
+        }}>
         <Typography variant="caption">Sort By</Typography>
         <Dropdown
           options={sortingOptions}
@@ -232,25 +223,19 @@ export const Home = () => {
           filteredProducts.map((product) => {
             return (
               <Card key={product?.id} className="product-card">
-                <CardMedia
-                  sx={{ height: 200 }}
-                  image={product.imageUrl}
-                  title="green iguana"
-                />
+                <CardMedia sx={{ height: 200 }} image={product.imageUrl} title="green iguana" />
                 <CardContent>
                   <div
                     style={{
                       display: "flex",
                       justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
+                      alignItems: "center"
+                    }}>
                     <Typography
                       gutterBottom
                       variant="h6"
                       component="div"
-                      style={{ margin: "auto 0" }}
-                    >
+                      style={{ margin: "auto 0" }}>
                       {product.name}
                     </Typography>
                     <div>{formatToIndianCurrency(product.price)}</div>
@@ -263,30 +248,25 @@ export const Home = () => {
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
+                    alignItems: "center"
+                  }}>
                   <Button
                     variant="contained"
                     size="small"
                     className="button"
-                    onClick={() => navigate(`/product/${product.id}`)}
-                  >
+                    onClick={() => navigate(`/product/${product.id}`)}>
                     BUY
                   </Button>
                   {isAdmin === "true" && (
                     <div>
-                      <IconButton
-                        onClick={() => navigate(`/edit-product/${product.id}`)}
-                      >
+                      <IconButton onClick={() => navigate(`/edit-product/${product.id}`)}>
                         <EditIcon style={{ width: "20px", height: "20px" }} />
                       </IconButton>
                       <IconButton
                         onClick={() => {
                           setDeleteId(product.id);
                           setDeleteProductName(product.name);
-                        }}
-                      >
+                        }}>
                         <DeleteIcon style={{ width: "20px", height: "20px" }} />
                       </IconButton>
                     </div>
@@ -306,8 +286,7 @@ export const Home = () => {
         TransitionComponent={Transition}
         keepMounted
         onClose={handleClose}
-        aria-describedby="alert-dialog-slide-description"
-      >
+        aria-describedby="alert-dialog-slide-description">
         <DialogTitle>Confirm deletion of product!</DialogTitle>
         <DialogContent style={{ margin: "5px auto" }}>
           <DialogContentText id="alert-dialog-slide-description">
@@ -324,6 +303,7 @@ export const Home = () => {
     </div>
   );
 };
+
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });

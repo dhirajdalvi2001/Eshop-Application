@@ -1,24 +1,33 @@
-import React from "react";
+import { Box, Button, Step, StepLabel, Stepper, Typography } from "@mui/material";
+import PropTypes from "prop-types";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import "./ActiveSteps.css";
-import {
-  Box,
-  Button,
-  Step,
-  StepLabel,
-  Stepper,
-  Typography,
-} from "@mui/material";
 
-export const ActiveStepThree = ({
-  steps,
-  setActiveStep,
-  formData,
-  errors,
-  product,
-  handleChange,
-  checkPermissions,
-  handleSubmit,
-}) => {
+export const ActiveStepThree = ({ steps, setActiveStep, product, quantity, address }) => {
+  const axiosPrivate = useAxiosPrivate();
+  const navigate = useNavigate();
+
+  const [addressInfo, setAddressInfo] = useState({});
+
+  const fetchAddress = async () => {
+    try {
+      const resp = await axiosPrivate.get(`/addresses/${address}`);
+
+      if (resp.status === 200) {
+        setAddressInfo(resp.data);
+      }
+    } catch (error) {
+      toast.error("UNable to fetch address!");
+    }
+  };
+
+  useEffect(() => {
+    fetchAddress();
+  }, []);
+
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
       <Box sx={{ width: "100%" }}>
@@ -34,7 +43,7 @@ export const ActiveStepThree = ({
         <div className="step-3-card step-3-product-details">
           <Typography variant="h5">{product?.name}</Typography>
           <Typography variant="p">
-            Quantity: <b>{formData?.quantity}</b>
+            Quantity: <b>{quantity}</b>
           </Typography>
           <Typography variant="p">
             Category: <b>{product?.category}</b>
@@ -42,30 +51,42 @@ export const ActiveStepThree = ({
           <Typography variant="p">{product?.description}</Typography>
           <Typography variant="h6" style={{ color: "red" }}>
             Total Price:{" "}
-            {product?.price?.toLocaleString("en-IN", {
+            {(product?.price * quantity)?.toLocaleString("en-IN", {
               maximumFractionDigits: 2,
               style: "currency",
-              currency: "INR",
+              currency: "INR"
             })}
           </Typography>
         </div>
         <div className="step-3-card step-3-address-details">
           <Typography variant="h5">Address:</Typography>
-          <Typography variant="p">{formData?.city}</Typography>
-          <Typography variant="p">
-            Contact Number: {formData?.contact}
-          </Typography>
-          <Typography variant="p">{formData?.street}</Typography>
-          <Typography variant="p">{formData?.state}</Typography>
-          <Typography variant="p">{formData?.zipcode}</Typography>
+          <Typography variant="p">{addressInfo?.city}</Typography>
+          <Typography variant="p">Contact Number: {addressInfo?.contact}</Typography>
+          <Typography variant="p">{addressInfo?.street}</Typography>
+          <Typography variant="p">{addressInfo?.state}</Typography>
+          <Typography variant="p">{addressInfo?.zipcode}</Typography>
         </div>
       </div>
       <div style={{ margin: "auto" }}>
         <Button onClick={() => setActiveStep(2)}>Back</Button>
-        <Button variant="contained" className="button" onClick={handleSubmit}>
+        <Button
+          variant="contained"
+          className="button"
+          onClick={() => {
+            toast.success("Order placed successfully!");
+            return navigate("/");
+          }}>
           Place Order
         </Button>
       </div>
     </div>
   );
+};
+
+ActiveStepThree.propTypes = {
+  steps: PropTypes.arrayOf(PropTypes.string),
+  setActiveStep: PropTypes.func,
+  product: PropTypes.object,
+  quantity: PropTypes.number,
+  address: PropTypes.string
 };

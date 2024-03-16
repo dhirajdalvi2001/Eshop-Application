@@ -4,21 +4,20 @@ import {
   TextField,
   ToggleButton,
   ToggleButtonGroup,
-  Typography,
+  Typography
 } from "@mui/material";
+import PropTypes from "prop-types";
 import React from "react";
-import { ErrorText } from "../ErrorText/ErrorText";
+import { toast } from "react-toastify";
 import "./ActiveSteps.css";
 
 export const ActiveStepOne = ({
   categories,
   categoriesLoading,
   product,
-  formData,
-  errors,
   setActiveStep,
-  handleChange,
-  checkPermissions,
+  quantity,
+  setQuantity
 }) => {
   return (
     <>
@@ -30,10 +29,9 @@ export const ActiveStepOne = ({
         style={{
           width: "100%",
           display: "flex",
-          justifyContent: "center",
+          justifyContent: "center"
         }}
-        disabled
-      >
+        disabled>
         {categoriesLoading ? (
           <div style={{ display: "flex", gap: "10px" }}>
             {Array(3)
@@ -48,10 +46,7 @@ export const ActiveStepOne = ({
               <ToggleButton
                 key={category}
                 value={category}
-                className={`${
-                  category === "ALL" ? "active-category-tab" : "category-tab"
-                }`}
-              >
+                className={`${category === "ALL" ? "active-category-tab" : "category-tab"}`}>
                 {category}
               </ToggleButton>
             );
@@ -63,9 +58,8 @@ export const ActiveStepOne = ({
           margin: "40px 16%",
           display: "flex",
           alignItems: "center",
-          gap: "24px",
-        }}
-      >
+          gap: "24px"
+        }}>
         {product?.imageUrl && (
           <div
             style={{
@@ -74,15 +68,9 @@ export const ActiveStepOne = ({
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              overflow: "hidden",
-            }}
-          >
-            <img
-              src={product.imageUrl}
-              alt={product.name}
-              srcset=""
-              style={{ width: "400px" }}
-            />
+              overflow: "hidden"
+            }}>
+            <img src={product.imageUrl} alt={product.name} srcSet="" style={{ width: "400px" }} />
           </div>
         )}
         <div style={{ width: "50%", display: "flex", flexDirection: "column" }}>
@@ -94,9 +82,8 @@ export const ActiveStepOne = ({
                 fontSize: "12px",
                 padding: "8px 12px",
                 borderRadius: "50px",
-                backgroundColor: "#3f51b5",
-              }}
-            >
+                backgroundColor: "#3f51b5"
+              }}>
               Available Quantity : {product?.availableItems}
             </div>
           </div>
@@ -106,40 +93,47 @@ export const ActiveStepOne = ({
           <Typography variant="subtitle1" margin="20px 0">
             <i>{product?.description}</i>
           </Typography>
-          <Typography
-            variant="paragraph"
-            color="red"
-            fontSize="20px"
-            marginBottom="32px"
-          >
+          <Typography variant="paragraph" color="red" fontSize="20px" marginBottom="32px">
             {product?.price?.toLocaleString("en-IN", {
               maximumFractionDigits: 2,
               style: "currency",
-              currency: "INR",
+              currency: "INR"
             })}
           </Typography>
           <TextField
             type="number"
             label="Enter Quantity"
-            value={formData?.quantity}
-            onChange={(e) => handleChange(e.target.value, "quantity")}
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value, "quantity")}
             placeholder="Enter Quantity"
             size="small"
             required
           />
-          {errors?.quantity && <ErrorText>{errors?.quantity}</ErrorText>}
+
           <Button
             variant="contained"
             className="button"
             sx={{ marginTop: "24px", width: "fit-content" }}
-            onClick={() =>
-              checkPermissions(["quantity"], () => setActiveStep(2))
-            }
-          >
+            onClick={() => {
+              if (quantity > product.availableItems) {
+                toast.error("Invalid Quantity selected!");
+                return;
+              }
+              setActiveStep(2);
+            }}>
             Place order
           </Button>
         </div>
       </div>
     </>
   );
+};
+
+ActiveStepOne.propTypes = {
+  categories: PropTypes.arrayOf(PropTypes.string),
+  categoriesLoading: PropTypes.bool,
+  product: PropTypes.object,
+  setActiveStep: PropTypes.func,
+  quantity: PropTypes.number,
+  setQuantity: PropTypes.func
 };
