@@ -19,8 +19,10 @@ const Login = () => {
   const token = getTokenCookie();
   const axiosPrivate = useAxiosPrivate();
 
+  // Function to fetch user role based on email and token
   async function fetchUserRole(userEmail, token) {
     try {
+      // Fetching user data from the backend server
       const usersData = await axiosPrivate.get("/users", {
         headers: {
           Authorization: "Bearer " + token
@@ -28,6 +30,8 @@ const Login = () => {
       });
       const userFound = usersData.data.filter((user) => user.email === userEmail)[0];
       const userRole = userFound.roles[0].name;
+
+      // Storing user role in localStorage
       localStorage.setItem("isAdmin", userRole === "ADMIN");
     } catch (error) {
       if (error.response.status === 403) {
@@ -40,16 +44,19 @@ const Login = () => {
     }
   }
 
+  // Function to handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
 
+    // Making a POST request to sign in endpoint
     const result = await customFetch.post("/auth/signin", {
       username: formData.get("email"),
       password: formData.get("password")
     });
 
     if (result.status === 200) {
+      //Setting the token
       setTokenCookie(result.data.token);
       const decoded = jwtDecode(result.data.token);
       localStorage.setItem("email", decoded.sub);
@@ -86,6 +93,7 @@ const Login = () => {
         </Typography>
 
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          {/* Input fields for Login */}
           <TextField
             margin="normal"
             required
@@ -108,6 +116,7 @@ const Login = () => {
             autoComplete="current-password"
           />
 
+          {/* Button to submit the form */}
           <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
             Sign In
           </Button>

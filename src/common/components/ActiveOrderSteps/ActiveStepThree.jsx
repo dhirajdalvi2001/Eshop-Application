@@ -39,6 +39,7 @@ export const ActiveStepThree = ({ steps, setActiveStep, product, quantity, addre
           ))}
         </Stepper>
       </Box>
+      {/* Card to display product details */}
       <div className="active-step-3">
         <div className="step-3-card step-3-product-details">
           <Typography variant="h5">{product?.name}</Typography>
@@ -58,6 +59,7 @@ export const ActiveStepThree = ({ steps, setActiveStep, product, quantity, addre
             })}
           </Typography>
         </div>
+        {/* Card to display address details */}
         <div className="step-3-card step-3-address-details">
           <Typography variant="h5">Address:</Typography>
           <Typography variant="p">{addressInfo?.city}</Typography>
@@ -68,7 +70,9 @@ export const ActiveStepThree = ({ steps, setActiveStep, product, quantity, addre
         </div>
       </div>
       <div style={{ margin: "auto" }}>
+        {/* Button to go back to the previous step */}
         <Button onClick={() => setActiveStep(2)}>Back</Button>
+        {/* Button to place the order */}
         <Button
           variant="contained"
           className="button"

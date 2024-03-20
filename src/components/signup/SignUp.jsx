@@ -21,7 +21,10 @@ export const SignUp = () => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
 
+    // Check if password and confirm password match
     if (formData.password !== formData.confirmPassword) return;
+
+    // Making a POST request to sign up endpoint
     const result = await customFetch.post("/auth/signup", {
       email: formData.get("email"),
       firstName: formData.get("fname"),
@@ -61,11 +64,13 @@ export const SignUp = () => {
           <LockOutlinedIcon />
         </Avatar>
 
+        {/* the form title */}
         <Typography component="h1" variant="h5">
           Sign Up
         </Typography>
 
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+          {/* Input fields for user details */}
           <TextField
             margin="normal"
             required
@@ -129,11 +134,13 @@ export const SignUp = () => {
             autoComplete="phone"
             type="tel"
           />
-
+          
+          {/* Button to submit the form */}
           <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
             Sign Up
           </Button>
 
+          {/* Lnk to the login page */}
           <Grid container justifyContent="flex-end">
             <Grid item>
               <Link href="/login" variant="body2">

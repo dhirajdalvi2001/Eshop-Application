@@ -21,6 +21,7 @@ export const ActiveStepOne = ({
 }) => {
   return (
     <>
+      {/* Toggle button group for categories */}
       <ToggleButtonGroup
         value={categories}
         exclusive
@@ -53,6 +54,7 @@ export const ActiveStepOne = ({
           })
         )}
       </ToggleButtonGroup>
+      {/* Product details */}
       <div
         style={{
           margin: "40px 16%",
@@ -60,6 +62,7 @@ export const ActiveStepOne = ({
           alignItems: "center",
           gap: "24px"
         }}>
+        {/* Product image */}
         {product?.imageUrl && (
           <div
             style={{
@@ -74,6 +77,7 @@ export const ActiveStepOne = ({
           </div>
         )}
         <div style={{ width: "50%", display: "flex", flexDirection: "column" }}>
+          {/* Product name and available quantity */}
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
             <Typography variant="h5">{product?.name}</Typography>
             <div
@@ -87,12 +91,15 @@ export const ActiveStepOne = ({
               Available Quantity : {product?.availableItems}
             </div>
           </div>
+          {/* Product category */}
           <Typography variant="p">
             Category: <b>{product?.category}</b>
           </Typography>
+          {/* Product description */}
           <Typography variant="subtitle1" margin="20px 0">
             <i>{product?.description}</i>
           </Typography>
+          {/* Product price */}
           <Typography variant="paragraph" color="red" fontSize="20px" marginBottom="32px">
             {product?.price?.toLocaleString("en-IN", {
               maximumFractionDigits: 2,
@@ -100,6 +107,7 @@ export const ActiveStepOne = ({
               currency: "INR"
             })}
           </Typography>
+          {/* Input field for quantity */}
           <TextField
             type="number"
             label="Enter Quantity"
@@ -110,6 +118,7 @@ export const ActiveStepOne = ({
             required
           />
 
+          {/* Button to place next step */}
           <Button
             variant="contained"
             className="button"

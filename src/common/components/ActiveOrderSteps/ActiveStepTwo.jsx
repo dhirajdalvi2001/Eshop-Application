@@ -11,6 +11,7 @@ export const ActiveStepTwo = ({ steps, setActiveStep, selectedAdress, setSelecte
 
   const [addresses, setAddresses] = useState([]);
 
+  // Function to fetch addresses
   const fetchAddresses = async () => {
     const resp = await axiosPrivate.get(`/addresses`);
 
@@ -28,6 +29,7 @@ export const ActiveStepTwo = ({ steps, setActiveStep, selectedAdress, setSelecte
     fetchAddresses();
   }, []);
 
+  // Function to handle form submission for adding a new address
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -45,6 +47,11 @@ export const ActiveStepTwo = ({ steps, setActiveStep, selectedAdress, setSelecte
         street: formData.get("street"),
         state,
         zipcode: formData.get("zipcode"),
+        /*
+          User Id not provided in the API Response from the backend.
+          Using Static User Id, of the user that was added manually
+          in the database, to check and complete the functionality
+        */
         user: "" // User ID
       });
 
@@ -81,6 +88,7 @@ export const ActiveStepTwo = ({ steps, setActiveStep, selectedAdress, setSelecte
       </Box>
       <div className="active-step-2">
         <div className="flex flex-col" style={{ width: "100%" }}>
+          {/* Dropdown to select an existing address */}
           <label style={{ fontSize: "14px" }}>Select Address</label>
           <CreatableSelect
             onChange={(e) => setSelectedAddress(e.value)}
@@ -89,7 +97,8 @@ export const ActiveStepTwo = ({ steps, setActiveStep, selectedAdress, setSelecte
             options={addresses}
           />
         </div>
-
+        
+        {/* Option to add a new address */}
         <Typography variant="subtitle2" margin="auto">
           -OR-
         </Typography>
@@ -98,13 +107,15 @@ export const ActiveStepTwo = ({ steps, setActiveStep, selectedAdress, setSelecte
           Add Address
         </Typography>
 
+        {/* Form for adding a new address */}
         <Box
           id="address-form"
           component="form"
           onSubmit={handleSubmit}
           sx={{ mt: 1, width: "80%" }}>
           <TextField type="text" label="Name" name="name" size="small" required fullWidth />
-
+          
+          {/* Form fields for the address */}
           <TextField
             type="number"
             label="Contact Number"
@@ -165,14 +176,17 @@ export const ActiveStepTwo = ({ steps, setActiveStep, selectedAdress, setSelecte
             sx={{ mt: 2 }}
           />
 
+          {/* Button to save the address */}
           <Button type="submit" variant="contained" fullWidth sx={{ mt: 2, mb: 1 }}>
             Save Address
           </Button>
         </Box>
 
         <div className="active-steps-2-buttons-group">
+          {/* Button to go back to the previous step */}
           <Button onClick={() => setActiveStep(1)}>Back</Button>
 
+          {/* Button to proceed to the next step */}
           <Button
             variant="contained"
             className="button"
