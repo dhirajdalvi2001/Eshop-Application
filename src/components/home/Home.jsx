@@ -51,7 +51,6 @@ export const Home = () => {
 
   // Function to fetch products and categories
   async function fetchData() {
-    setProductsLoading(true);
     // Fetching categories
     if (categories.length <= 1) {
       setCategoriesLoading(true);
@@ -63,7 +62,6 @@ export const Home = () => {
     const productsData = await axiosPrivate.get("/products");
     setProducts(productsData.data);
     setFilteredProducts(productsData.data);
-    setProductsLoading(false);
   }
   // Function to delete product
   async function deleteProduct() {

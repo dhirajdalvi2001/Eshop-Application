@@ -8,13 +8,13 @@ const useAxiosPrivate = () => {
   useEffect(() => {
     const handleRequest = async () => {
       const token = getTokenCookie();
-      if (!token) {
+      if (!token || token === undefined) {
         return;
       }
       const requestIntercept = axiosPrivate.interceptors.request.use(
         (config) => {
-          if (!config.headers["Authorization"]) {
-            config.headers["Authorization"] = `Bearer ${token}`;
+          if (!config.headers["X-Auth-Token"]) {
+            config.headers["X-Auth-Token"] = `${token}`;
           }
           return config;
         },

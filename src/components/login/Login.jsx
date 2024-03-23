@@ -4,45 +4,16 @@ import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Link from "@mui/material/Link";
-import { jwtDecode } from "jwt-decode";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { customFetch } from "../../api/axios";
 import Copyright from "../../common/components/Copyright";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { getTokenCookie, setTokenCookie } from "../../utils/helperFunc";
 
 const Login = () => {
   const navigate = useNavigate();
-
   const token = getTokenCookie();
-  const axiosPrivate = useAxiosPrivate();
-
-  // Function to fetch user role based on email and token
-  async function fetchUserRole(userEmail, token) {
-    try {
-      // Fetching user data from the backend server
-      const usersData = await axiosPrivate.get("/users", {
-        headers: {
-          Authorization: "Bearer " + token
-        }
-      });
-      const userFound = usersData.data.filter((user) => user.email === userEmail)[0];
-      const userRole = userFound.roles[0].name;
-      
-      // Storing user role in localStorage
-      localStorage.setItem("isAdmin", userRole === "ADMIN");
-    } catch (error) {
-      if (error.response.status === 403) {
-        // Remove isAdmin if exists
-        localStorage.removeItem("isAdmin");
-      }
-    } finally {
-      toast.success("User logged in successfully");
-      navigate("/");
-    }
-  }
 
   // Function to handle form submission
   const handleSubmit = async (event) => {
@@ -57,10 +28,12 @@ const Login = () => {
 
     if (result.status === 200) {
       //Setting the token
-      setTokenCookie(result.data.token);
-      const decoded = jwtDecode(result.data.token);
-      localStorage.setItem("email", decoded.sub);
-      fetchUserRole(decoded.sub, result.data.token);
+      setTokenCookie(result.headers["x-auth-token"]);
+      localStorage.setItem("userId", result.data.id);
+      localStorage.setItem("email", result.data.email);
+      localStorage.setItem("isAdmin", result.data.roles[0] === "ADMIN");
+      toast.success("User logged in successfully");
+      navigate("/");
     }
   };
 

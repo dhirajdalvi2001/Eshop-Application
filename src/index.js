@@ -1,4 +1,3 @@
-import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -8,8 +7,8 @@ import "./index.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <StrictMode>
+  <>
     <ToastContainer closeOnClick limit={1} hideProgressBar autoClose={2000} />
     <RouterProvider router={router} />
-  </StrictMode>
+  </>
 );

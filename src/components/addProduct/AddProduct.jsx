@@ -45,7 +45,7 @@ export const AddProduct = () => {
         const product = await axiosPrivate.get(`/products/${productId}`);
         if (product.status === 200) {
           // Update form data with product details
-          Object.entries(formData).forEach(([key, value]) => {
+          Object.entries(formData).forEach(([key]) => {
             if (key === "category") {
               setFormData((prev) => ({
                 ...prev,

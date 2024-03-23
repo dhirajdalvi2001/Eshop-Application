@@ -92,7 +92,6 @@ export const ActiveStepTwo = ({ steps, setActiveStep, selectedAdress, setSelecte
             options={addresses}
           />
         </div>
-        
         {/* Option to add a new address */}
         <Typography variant="subtitle2" margin="auto">
           -OR-
@@ -109,7 +108,7 @@ export const ActiveStepTwo = ({ steps, setActiveStep, selectedAdress, setSelecte
           onSubmit={handleSubmit}
           sx={{ mt: 1, width: "80%" }}>
           <TextField type="text" label="Name" name="name" size="small" required fullWidth />
-          
+
           {/* Input field for the Contact Number */}
           <TextField
             type="number"
