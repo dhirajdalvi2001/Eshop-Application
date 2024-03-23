@@ -1,36 +1,78 @@
-import {
-  Box,
-  Button,
-  Step,
-  StepLabel,
-  Stepper,
-  TextField,
-  Typography,
-} from "@mui/material";
-import React from "react";
+import { Box, Button, Step, StepLabel, Stepper, TextField, Typography } from "@mui/material";
+import PropTypes from "prop-types";
+import React, { useEffect, useState } from "react";
 import CreatableSelect from "react-select/creatable";
+import { toast } from "react-toastify";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import "./ActiveSteps.css";
-import { ErrorText } from "../ErrorText/ErrorText";
 
-export const ActiveStepTwo = ({
-  steps,
-  setActiveStep,
-  addresses,
-  formData,
-  errors,
-  handleChange,
-  checkPermissions,
-}) => {
+export const ActiveStepTwo = ({ steps, setActiveStep, selectedAdress, setSelectedAddress }) => {
+  const axiosPrivate = useAxiosPrivate();
+
+  const [addresses, setAddresses] = useState([]);
+
+  // Function to fetch addresses
+  const fetchAddresses = async () => {
+    const resp = await axiosPrivate.get(`/addresses`);
+
+    if (resp.status === 200) {
+      setAddresses(
+        resp.data.map((address) => ({
+          value: address.id,
+          label: `${address.name}-->${address.city}, ${address.state}`
+        }))
+      );
+    }
+  };
+
+  useEffect(() => {
+    fetchAddresses();
+  }, []);
+
+  // Function to handle form submission for adding a new address
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+
+    const name = formData.get("name");
+    const city = formData.get("city");
+    const state = formData.get("state");
+
+    try {
+      const resp = await axiosPrivate.post("/addresses", {
+        name,
+        contactNumber: formData.get("contactNumber"),
+        city,
+        landmark: formData.get("landmark"),
+        street: formData.get("street"),
+        state,
+        zipcode: formData.get("zipcode"),
+        user: "" // User ID
+      });
+
+      if (resp.status === 201) {
+        const addressId = resp.data;
+        setAddresses([
+          ...addresses,
+          {
+            value: addressId,
+            label: `${name}-->${city}, ${state}`
+          }
+        ]);
+      }
+    } catch (error) {
+      toast.error("Unable to save Address!");
+    }
+  };
+
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
       <Box
         sx={{
           width: "80%",
           margin: "auto auto 10px",
-          padding: "20px",
-          backgroundColor: "#ffffff",
-        }}
-      >
+          padding: "20px"
+        }}>
         <Stepper activeStep={1}>
           {steps.map((label) => (
             <Step key={label}>
@@ -41,134 +83,131 @@ export const ActiveStepTwo = ({
       </Box>
       <div className="active-step-2">
         <div className="flex flex-col" style={{ width: "100%" }}>
+          {/* Dropdown to select an existing address */}
           <label style={{ fontSize: "14px" }}>Select Address</label>
           <CreatableSelect
-            value={formData?.category}
-            onChange={(e) => handleChange(e, "category")}
+            onChange={(e) => setSelectedAddress(e.value)}
             isClearable
             className="react-select-container select-address"
             options={addresses}
           />
         </div>
+        
+        {/* Option to add a new address */}
         <Typography variant="subtitle2" margin="auto">
           -OR-
         </Typography>
-        <form action="" className="address-form">
-          <Typography variant="h6" color="#555555" margin="auto">
-            Add Address
-          </Typography>
-          <div className="flex flex-col">
-            <TextField
-              type="text"
-              label="Name"
-              value={formData?.name}
-              onChange={(e) => handleChange(e.target.value, "name")}
-              placeholder="Name"
-              size="small"
-              required
-            />
-            <ErrorText>{errors?.name}</ErrorText>
-          </div>
-          <div className="flex flex-col">
-            <TextField
-              type="number"
-              label="Contact Number"
-              value={formData?.contact}
-              onChange={(e) => handleChange(e.target.value, "contact")}
-              placeholder="Contact Number"
-              size="small"
-              required
-            />
-            <ErrorText>{errors?.contact}</ErrorText>
-          </div>
-          <div className="flex flex-col">
-            <TextField
-              type="text"
-              label="Street"
-              value={formData?.street}
-              onChange={(e) => handleChange(e.target.value, "street")}
-              placeholder="Street"
-              size="small"
-              required
-            />
-            <ErrorText>{errors?.street}</ErrorText>
-          </div>
-          <div className="flex flex-col">
-            <TextField
-              type="text"
-              label="City"
-              value={formData?.city}
-              onChange={(e) => handleChange(e.target.value, "city")}
-              placeholder="City"
-              size="small"
-              required
-            />
-            <ErrorText>{errors?.city}</ErrorText>
-          </div>
-          <div className="flex flex-col">
-            <TextField
-              type="text"
-              label="State"
-              value={formData?.state}
-              onChange={(e) => handleChange(e.target.value, "state")}
-              placeholder="State"
-              size="small"
-              required
-            />
-            <ErrorText>{errors?.state}</ErrorText>
-          </div>
-          <div className="flex flex-col">
-            <TextField
-              type="text"
-              label="Landmark"
-              value={formData?.landmark}
-              onChange={(e) => handleChange(e.target.value, "landmark")}
-              placeholder="Landmark"
-              size="small"
-              required
-            />
-            <ErrorText>{errors?.landmark}</ErrorText>
-          </div>
-          <div className="flex flex-col">
-            <TextField
-              type="number"
-              label="Zip Code"
-              value={formData?.zipcode}
-              onChange={(e) => handleChange(e.target.value, "zipcode")}
-              placeholder="Zip Code"
-              size="small"
-              required
-            />
-            <ErrorText>{errors?.zipcode}</ErrorText>
-          </div>
-          <Button variant="contained" className="button">
+
+        <Typography variant="h5" color="#555555" margin="auto">
+          Add Address
+        </Typography>
+
+        {/* Form for adding a new address */}
+        <Box
+          id="address-form"
+          component="form"
+          onSubmit={handleSubmit}
+          sx={{ mt: 1, width: "80%" }}>
+          <TextField type="text" label="Name" name="name" size="small" required fullWidth />
+          
+          {/* Input field for the Contact Number */}
+          <TextField
+            type="number"
+            label="Contact Number"
+            name="contactNumber"
+            size="small"
+            required
+            fullWidth
+            sx={{ mt: 2 }}
+          />
+
+          {/* Input field for the Street */}
+          <TextField
+            type="text"
+            label="Street"
+            name="street"
+            size="small"
+            required
+            fullWidth
+            sx={{ mt: 2 }}
+          />
+
+          {/* Input field for the City */}
+          <TextField
+            type="text"
+            label="City"
+            name="city"
+            size="small"
+            required
+            fullWidth
+            sx={{ mt: 2 }}
+          />
+
+          {/* Input field for the State */}
+          <TextField
+            type="text"
+            label="State"
+            name="state"
+            size="small"
+            required
+            fullWidth
+            sx={{ mt: 2 }}
+          />
+
+          {/* Input field for the Landmark */}
+          <TextField
+            type="text"
+            label="Landmark"
+            name="landmark"
+            size="small"
+            required
+            fullWidth
+            sx={{ mt: 2 }}
+          />
+
+          {/* Input field for the Zipcode */}
+          <TextField
+            type="number"
+            label="Zip Code"
+            name="zipcode"
+            size="small"
+            required
+            fullWidth
+            sx={{ mt: 2 }}
+          />
+
+          {/* Button to save the address */}
+          <Button type="submit" variant="contained" fullWidth sx={{ mt: 2, mb: 1 }}>
             Save Address
           </Button>
-          <div className="active-steps-2-buttons-group">
-            <Button onClick={() => setActiveStep(1)}>Back</Button>
-            <Button
-              variant="contained"
-              className="button"
-              onClick={() =>
-                checkPermissions(
-                  [
-                    "name",
-                    "contact",
-                    "street",
-                    "city",
-                    "state",
-                    "landmark",
-                    "zipcode",
-                  ],
-                  () => setActiveStep(3)
-                )
+        </Box>
+
+        <div className="active-steps-2-buttons-group">
+          {/* Button to go back to the previous step */}
+          <Button onClick={() => setActiveStep(1)}>Back</Button>
+
+          {/* Button to proceed to the next step */}
+          <Button
+            variant="contained"
+            className="button"
+            onClick={() => {
+              if (!selectedAdress) {
+                toast.error("Please select an address to proceed!");
+                return;
               }
-            >
-              Next
-            </Button>
-          </div>
-        </form>
+              setActiveStep(3);
+            }}>
+            Next
+          </Button>
+        </div>
       </div>
     </div>
   );
+};
+
+ActiveStepTwo.propTypes = {
+  steps: PropTypes.arrayOf(PropTypes.string),
+  setActiveStep: PropTypes.func,
+  selectedAdress: PropTypes.string,
+  setSelectedAddress: PropTypes.func
 };

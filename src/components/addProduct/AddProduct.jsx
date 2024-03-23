@@ -1,10 +1,12 @@
 import { Button, TextField, Typography } from "@mui/material";
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import CreatableSelect from "react-select/creatable";
-import "./AddProduct.css";
 import { toast } from "react-toastify";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import "./AddProduct.css";
 
 const initialProductState = {
   name: "",
@@ -13,7 +15,7 @@ const initialProductState = {
   description: "",
   manufacturer: "",
   availableItems: 0,
-  imageUrl: "",
+  imageUrl: ""
 };
 
 export const AddProduct = () => {
@@ -28,27 +30,31 @@ export const AddProduct = () => {
     setFormData((prev) => ({ ...prev, [key]: value }));
   };
 
+  // Function to fetch data
   async function fetchData() {
     try {
+      // Fetching product categories
       const result = await axiosPrivate.get("/products/categories");
       const mappedOptions = result.data.map((category) => ({
         label: category,
-        value: category,
+        value: category
       }));
       setCategoryOptions(mappedOptions);
+      // Fetching product details
       if (productId) {
         const product = await axiosPrivate.get(`/products/${productId}`);
         if (product.status === 200) {
+          // Update form data with product details
           Object.entries(formData).forEach(([key, value]) => {
             if (key === "category") {
               setFormData((prev) => ({
                 ...prev,
-                [key]: { label: product.data[key], value: product.data[key] },
+                [key]: { label: product.data[key], value: product.data[key] }
               }));
             } else {
               setFormData((prev) => ({
                 ...prev,
-                [key]: product.data[key],
+                [key]: product.data[key]
               }));
             }
           });
@@ -58,6 +64,7 @@ export const AddProduct = () => {
       console.error(error);
     }
   }
+  // Function to add a new product
   async function addProduct(e) {
     e.preventDefault();
     try {
@@ -72,6 +79,7 @@ export const AddProduct = () => {
       console.error(error);
     }
   }
+  // Function to edit an existing product
   async function editProduct(e) {
     e.preventDefault();
     try {
@@ -96,26 +104,24 @@ export const AddProduct = () => {
   }
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        width: "100%",
-      }}
-    >
-      <div
-        style={{
-          width: "300px",
-          margin: "50px auto",
+    <Container component="div" maxWidth="xs">
+      <Box
+        sx={{
+          marginTop: 8,
           display: "flex",
           flexDirection: "column",
-          gap: "24px",
-        }}
-      >
+          alignItems: "center"
+        }}>
+        {/* Title for the form */}
         <Typography variant="h5" color="text.secondary" align="center">
           {productId ? "Modify" : "Add"} Product
         </Typography>
-        <form className="signup-form" autoComplete="off">
+
+        {/* Form */}
+        <Box component="form" sx={{ mt: 1 }}>
+          {/* Input fields */}
+
+          {/* Input field for Name */}
           <TextField
             type="text"
             label="Name"
@@ -123,15 +129,29 @@ export const AddProduct = () => {
             onChange={(e) => handleChange(e.target.value, "name")}
             placeholder="Name"
             size="small"
+            autoFocus
             required
+            fullWidth
+            sx={{ mt: 3 }}
           />
+
+          {/* Select input for product category */}
           <CreatableSelect
             value={formData?.category}
             onChange={(e) => handleChange(e, "category")}
             isClearable
             className="react-select-container"
             options={categoryOptions}
+            fullWidth
+            styles={{
+              control: (baseStyles) => ({
+                ...baseStyles,
+                marginTop: 20
+              })
+            }}
           />
+
+          {/* Input field for Manufacturer */}
           <TextField
             type="text"
             label="Manufacturer"
@@ -140,7 +160,11 @@ export const AddProduct = () => {
             placeholder="Manufacturer"
             size="small"
             required
+            fullWidth
+            sx={{ mt: 3 }}
           />
+
+          {/* Input field for Available Items */}
           <TextField
             type="number"
             label="Available Items"
@@ -149,7 +173,11 @@ export const AddProduct = () => {
             placeholder="Available Items"
             size="small"
             required
+            fullWidth
+            sx={{ mt: 3 }}
           />
+
+          {/* Input field for Price */}
           <TextField
             type="number"
             label="Price"
@@ -158,7 +186,11 @@ export const AddProduct = () => {
             placeholder="Price"
             size="small"
             required
+            fullWidth
+            sx={{ mt: 3 }}
           />
+
+          {/* Input field for Image URL */}
           <TextField
             type="text"
             label="Image URL"
@@ -167,7 +199,11 @@ export const AddProduct = () => {
             placeholder="Image URL"
             size="small"
             required
+            fullWidth
+            sx={{ mt: 3 }}
           />
+
+          {/* Input field for Description */}
           <TextField
             type="text"
             label="Description"
@@ -176,17 +212,21 @@ export const AddProduct = () => {
             placeholder="Description"
             size="small"
             required
+            fullWidth
+            sx={{ mt: 3 }}
           />
+
+          {/* Button for submitting the form */}
           <Button
-            variant="contained"
             type="submit"
-            className="button"
-            onClick={productId ? editProduct : addProduct}
-          >
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+            onClick={productId ? editProduct : addProduct}>
             {productId ? "Modify" : "Save"} Product
           </Button>
-        </form>
-      </div>
-    </div>
+        </Box>
+      </Box>
+    </Container>
   );
 };

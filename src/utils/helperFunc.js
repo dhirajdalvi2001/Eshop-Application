@@ -20,8 +20,7 @@ export function getTokenCookie() {
 export function clearTokenCookie() {
   localStorage.removeItem("email");
   localStorage.removeItem("isAdmin");
-  document.cookie =
-    "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; secure; path=/";
+  document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; secure; path=/";
 }
 export function formatToIndianCurrency(number) {
   return "₹ " + number.toLocaleString("en-IN");

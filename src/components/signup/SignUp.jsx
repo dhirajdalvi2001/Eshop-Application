@@ -1,34 +1,39 @@
-import React, { useEffect, useState } from "react";
-import "./SignUp.css";
-import { Footer } from "../../common/components/Footer/Footer";
-import { Button, IconButton, TextField, Typography } from "@mui/material";
-import LockOpenIcon from "@mui/icons-material/LockOpen";
-import { customFetch } from "../../api/axios";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { Button, TextField, Typography } from "@mui/material";
+import Avatar from "@mui/material/Avatar";
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
+import Link from "@mui/material/Link";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getTokenCookie } from "../../utils/helperFunc";
 import { toast } from "react-toastify";
-
-const initialFormData = {
-  email: "",
-  firstName: "",
-  lastName: "",
-  contactNumber: "",
-  password: "",
-  confirmPassword: "",
-};
+import { customFetch } from "../../api/axios";
+import Copyright from "../../common/components/Copyright";
+import { getTokenCookie } from "../../utils/helperFunc";
 
 export const SignUp = () => {
   const navigate = useNavigate();
+
   const token = getTokenCookie();
-  const [formData, setFormData] = useState(initialFormData);
-  const handleChange = (value, key) => {
-    setFormData((prev) => ({ ...prev, [key]: value }));
-  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+
+    // Check if password and confirm password match
     if (formData.password !== formData.confirmPassword) return;
-    const result = await customFetch.post("/auth/signup", formData);
+
+    // Making a POST request to sign up endpoint
+    const result = await customFetch.post("/auth/signup", {
+      email: formData.get("email"),
+      firstName: formData.get("fname"),
+      lastName: formData.get("lname"),
+      contactNumber: formData.get("phone"),
+      password: formData.get("password"),
+      confirmPassword: formData.get("cpassword")
+    });
+
     if (result.status === 200) {
       navigate("/login");
       toast.success(result.data.message);
@@ -47,78 +52,113 @@ export const SignUp = () => {
   }
 
   return (
-    <div id="signup">
-      <IconButton
+    <Container component="div" maxWidth="xs">
+      <Box
         sx={{
-          backgroundColor: "#F50057",
-          ":hover": { backgroundColor: "#ff2370" },
-        }}
-      >
-        <LockOpenIcon style={{ color: "white" }} />
-      </IconButton>
-      <Typography fontSize="20px">Sign Up</Typography>
-      <form className="signup-form" autoComplete="off">
-        <TextField
-          type="text"
-          label="First Name"
-          value={formData?.firstName}
-          onChange={(e) => handleChange(e.target.value, "firstName")}
-          placeholder="First Name"
-          size="small"
-        />
-        <TextField
-          type="text"
-          label="Last Name"
-          value={formData?.lastName}
-          onChange={(e) => handleChange(e.target.value, "lastName")}
-          placeholder="Last Name"
-          size="small"
-        />
-        <TextField
-          type="email"
-          label="Email Address"
-          value={formData?.email}
-          onChange={(e) => handleChange(e.target.value, "email")}
-          placeholder="Email Address"
-          size="small"
-        />
-        <TextField
-          type="password"
-          label="Password"
-          value={formData?.password}
-          onChange={(e) => handleChange(e.target.value, "password")}
-          placeholder="Password"
-          size="small"
-        />
-        <TextField
-          type="password"
-          label="Confirm Password"
-          value={formData?.confirmPassword}
-          onChange={(e) => handleChange(e.target.value, "confirmPassword")}
-          placeholder="Confirm Password"
-          size="small"
-        />
-        <TextField
-          type="number"
-          label="Contact Number"
-          value={formData?.contact}
-          onChange={(e) => handleChange(e.target.value, "contactNumber")}
-          placeholder="Contact Number"
-          size="small"
-        />
-        <Button
-          variant="contained"
-          type="submit"
-          className="button"
-          onClick={handleSubmit}
-        >
+          marginTop: 8,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center"
+        }}>
+        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+          <LockOutlinedIcon />
+        </Avatar>
+
+        {/* the form title */}
+        <Typography component="h1" variant="h5">
           Sign Up
-        </Button>
-        <a href="/login" style={{ textAlign: "right" }} className="hyperlink">
-          Already have an account? Sign in
-        </a>
-      </form>
-      <Footer />
-    </div>
+        </Typography>
+
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+          {/* Input fields for user details */}
+
+          {/* Input field for First Name */}
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="fname"
+            label="First Name"
+            name="fname"
+            autoFocus
+            autoComplete="fname"
+          />
+
+          {/* Input field for Last Name */}
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="lname"
+            label="Last Name"
+            id="lname"
+            autoComplete="lname"
+          />
+
+          {/* Input field for Email */}
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="Email Address"
+            name="email"
+            autoComplete="email"
+          />
+
+          {/* Input field for Password */}
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Password"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+          />
+
+          {/* Input field for Confirm Password */}
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="cPassword"
+            label="Confirm Password"
+            type="password"
+            id="cpassword"
+            autoComplete="current-password"
+          />
+
+          {/* Input field for Contact Number */}
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="phone"
+            label="Contact Number"
+            name="phone"
+            autoComplete="phone"
+            type="tel"
+          />
+          
+          {/* Button to submit the form */}
+          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+            Sign Up
+          </Button>
+
+          {/* Lnk to the login page */}
+          <Grid container justifyContent="flex-end">
+            <Grid item>
+              <Link href="/login" variant="body2">
+                Already have an account? Sign in
+              </Link>
+            </Grid>
+          </Grid>
+        </Box>
+      </Box>
+
+      <Copyright sx={{ mt: 8, mb: 4 }} />
+    </Container>
   );
 };
