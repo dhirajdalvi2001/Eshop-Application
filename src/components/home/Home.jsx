@@ -49,19 +49,23 @@ export const Home = () => {
   const [callFetchProducts, setCallFetchProducts] = useState(0);
   const sortingOptions = ["Default", "Price: High to Low", "Price: Low to High", "Newest"];
 
+  // Function to fetch products and categories
   async function fetchData() {
     setProductsLoading(true);
+    // Fetching categories
     if (categories.length <= 1) {
       setCategoriesLoading(true);
       const categoriesData = await axiosPrivate.get("/products/categories");
       setCategories((prev) => [...prev, ...categoriesData.data]);
       setCategoriesLoading(false);
     }
+    // Fetching products
     const productsData = await axiosPrivate.get("/products");
     setProducts(productsData.data);
     setFilteredProducts(productsData.data);
     setProductsLoading(false);
   }
+  // Function to delete product
   async function deleteProduct() {
     try {
       const result = await axiosPrivate.delete(`/products/${deleteId}`);
@@ -76,14 +80,17 @@ export const Home = () => {
     }
   }
 
+  // Function to sort products in ascending order
   function sortAscending() {
     const sortedProducts = [...products].sort((a, b) => a.price - b.price);
     setFilteredProducts(sortedProducts);
   }
+  // Function to sort products in descending order
   function sortDescending() {
     const sortedProducts = [...products].sort((a, b) => b.price - a.price);
     setFilteredProducts(sortedProducts);
   }
+  // Function to perform delayed call
   function delayedCall(func) {
     setProductsLoading(true);
     setTimeout(() => {
@@ -91,6 +98,7 @@ export const Home = () => {
       setProductsLoading(false);
     }, 500);
   }
+  // Function to search products
   function searchProducts() {
     const filteredProducts = products
       .map((product) => {
@@ -156,6 +164,7 @@ export const Home = () => {
 
   return (
     <div style={{ padding: "20px" }}>
+      {/* ToggleButtonGroup for selecting categories */}
       <ToggleButtonGroup
         value={categories}
         exclusive
@@ -176,6 +185,7 @@ export const Home = () => {
               })}
           </div>
         ) : (
+          // Displaying categories as toggle buttons
           categories?.map((category) => {
             return (
               <ToggleButton
@@ -190,6 +200,7 @@ export const Home = () => {
           })
         )}
       </ToggleButtonGroup>
+      {/* Dropdown for sorting options */}
       <div
         style={{
           margin: "20px 100px",
@@ -204,6 +215,7 @@ export const Home = () => {
           setValue={setSelectedSortOption}
         />
       </div>
+      {/* Displaying products */}
       <div className="products-container">
         {productsLoading ? (
           <>
@@ -220,6 +232,7 @@ export const Home = () => {
               ))}
           </>
         ) : filteredProducts?.length > 0 ? (
+          // Displaying product cards
           filteredProducts.map((product) => {
             return (
               <Card key={product?.id} className="product-card">
@@ -257,6 +270,7 @@ export const Home = () => {
                     onClick={() => navigate(`/product/${product.id}`)}>
                     BUY
                   </Button>
+                  {/* Edit and delete icons for admin */}
                   {isAdmin === "true" && (
                     <div>
                       <IconButton onClick={() => navigate(`/edit-product/${product.id}`)}>
@@ -281,6 +295,7 @@ export const Home = () => {
           </Typography>
         )}
       </div>
+      {/* Confirmation dialog for deleting a product */}
       <Dialog
         open={deleteId ? true : null}
         TransitionComponent={Transition}

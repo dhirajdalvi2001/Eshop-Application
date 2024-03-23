@@ -20,6 +20,7 @@ const Product = () => {
 
   const steps = ["Items", "Select Address", "Confirm Order"];
 
+  // Function to fetch product details from the server
   async function fetchProductDetails() {
     try {
       const result = await axiosPrivate.get(`/products/${productId}`);
@@ -31,6 +32,7 @@ const Product = () => {
     }
   }
 
+  // Function to fetch categories from the server
   async function fetchCategories() {
     if (categories.length <= 1) {
       setCategoriesLoading(true);
@@ -53,6 +55,8 @@ const Product = () => {
         height: "fit-content",
         backgroundColor: "#fafafa"
       }}>
+      {/* Rendering different steps based on activeStep */}
+      {/* Step One */}
       {activeStep === 1 && (
         <ActiveStepOne
           categories={categories}
@@ -64,6 +68,7 @@ const Product = () => {
         />
       )}
 
+      {/* Step Two */}
       {activeStep === 2 && (
         <ActiveStepTwo
           steps={steps}
@@ -73,6 +78,7 @@ const Product = () => {
         />
       )}
 
+      {/* Step Three */}
       {activeStep === 3 && (
         <ActiveStepThree
           steps={steps}
