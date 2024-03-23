@@ -57,6 +57,7 @@ export const TopNavbar = ({ searchValue, setSearchValue }) => {
   const navigate = useNavigate();
   const isAdmin = localStorage.getItem("isAdmin");
 
+  // Function to handle logout
   function logoutHandler() {
     clearTokenCookie();
     navigate("/login");
@@ -67,6 +68,7 @@ export const TopNavbar = ({ searchValue, setSearchValue }) => {
       <AppBar position="static" id="navbar">
         <Toolbar sx={{ justifyContent: "space-between" }}>
           <Box sx={{ display: "inline-flex" }}>
+            {/* Logo and branding */}
             <IconButton href="/" edge="start" color="inherit" aria-label="eShop" sx={{ mr: 2 }}>
               <ShoppingCart />
             </IconButton>
@@ -79,6 +81,7 @@ export const TopNavbar = ({ searchValue, setSearchValue }) => {
             </Typography>
           </Box>
 
+          {/* Search functionality */}
           {token && (
             <Search>
               <SearchIconWrapper>
@@ -94,6 +97,7 @@ export const TopNavbar = ({ searchValue, setSearchValue }) => {
           )}
 
           <Box>
+            {/* Conditional rendering if user logged in or not based on token) */}
             {!token && (
               <>
                 <Link href="/login" color="inherit" mr={2}>
@@ -109,6 +113,7 @@ export const TopNavbar = ({ searchValue, setSearchValue }) => {
                 <Link href="/" color="inherit" mr={2}>
                   Home
                 </Link>
+                {/* Conditional rendering for admin links */}
                 {isAdmin == "true" && (
                   <Link href="/add-product" color="inherit" mr={2}>
                     Add Product

@@ -30,18 +30,21 @@ export const AddProduct = () => {
     setFormData((prev) => ({ ...prev, [key]: value }));
   };
 
+  // Function to fetch data
   async function fetchData() {
     try {
+      // Fetching product categories
       const result = await axiosPrivate.get("/products/categories");
       const mappedOptions = result.data.map((category) => ({
         label: category,
         value: category
       }));
       setCategoryOptions(mappedOptions);
+      // Fetching product details
       if (productId) {
         const product = await axiosPrivate.get(`/products/${productId}`);
         if (product.status === 200) {
-          // eslint-disable-next-line no-unused-vars
+          // Update form data with product details
           Object.entries(formData).forEach(([key, value]) => {
             if (key === "category") {
               setFormData((prev) => ({
@@ -61,6 +64,7 @@ export const AddProduct = () => {
       console.error(error);
     }
   }
+  // Function to add a new product
   async function addProduct(e) {
     e.preventDefault();
     try {
@@ -75,6 +79,7 @@ export const AddProduct = () => {
       console.error(error);
     }
   }
+  // Function to edit an existing product
   async function editProduct(e) {
     e.preventDefault();
     try {
@@ -107,11 +112,16 @@ export const AddProduct = () => {
           flexDirection: "column",
           alignItems: "center"
         }}>
+        {/* Title for the form */}
         <Typography variant="h5" color="text.secondary" align="center">
           {productId ? "Modify" : "Add"} Product
         </Typography>
 
+        {/* Form */}
         <Box component="form" sx={{ mt: 1 }}>
+          {/* Input fields */}
+
+          {/* Input field for Name */}
           <TextField
             type="text"
             label="Name"
@@ -125,6 +135,7 @@ export const AddProduct = () => {
             sx={{ mt: 3 }}
           />
 
+          {/* Select input for product category */}
           <CreatableSelect
             value={formData?.category}
             onChange={(e) => handleChange(e, "category")}
@@ -140,6 +151,7 @@ export const AddProduct = () => {
             }}
           />
 
+          {/* Input field for Manufacturer */}
           <TextField
             type="text"
             label="Manufacturer"
@@ -152,6 +164,7 @@ export const AddProduct = () => {
             sx={{ mt: 3 }}
           />
 
+          {/* Input field for Available Items */}
           <TextField
             type="number"
             label="Available Items"
@@ -164,6 +177,7 @@ export const AddProduct = () => {
             sx={{ mt: 3 }}
           />
 
+          {/* Input field for Price */}
           <TextField
             type="number"
             label="Price"
@@ -176,6 +190,7 @@ export const AddProduct = () => {
             sx={{ mt: 3 }}
           />
 
+          {/* Input field for Image URL */}
           <TextField
             type="text"
             label="Image URL"
@@ -188,6 +203,7 @@ export const AddProduct = () => {
             sx={{ mt: 3 }}
           />
 
+          {/* Input field for Description */}
           <TextField
             type="text"
             label="Description"
@@ -200,6 +216,7 @@ export const AddProduct = () => {
             sx={{ mt: 3 }}
           />
 
+          {/* Button for submitting the form */}
           <Button
             type="submit"
             fullWidth
