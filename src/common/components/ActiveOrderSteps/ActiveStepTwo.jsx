@@ -47,18 +47,19 @@ export const ActiveStepTwo = ({ steps, setActiveStep, selectedAdress, setSelecte
         street: formData.get("street"),
         state,
         zipcode: formData.get("zipcode"),
-        user: "" // User ID
+        user: localStorage.getItem("userId")
       });
-
+      
       if (resp.status === 201) {
-        const addressId = resp.data;
-        setAddresses([
-          ...addresses,
-          {
-            value: addressId,
-            label: `${name}-->${city}, ${state}`
-          }
-        ]);
+        // const addressId = resp.data.id;
+        // setAddresses([
+        //   ...addresses,
+        //   {
+        //     value: addressId,
+        //     label: `${name}-->${city}, ${state}`
+        //   }
+        // ]);
+        fetchAddresses();
       }
     } catch (error) {
       toast.error("Unable to save Address!");
