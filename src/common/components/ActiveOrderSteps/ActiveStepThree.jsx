@@ -15,14 +15,36 @@ export const ActiveStepThree = ({ steps, setActiveStep, product, quantity, addre
   const fetchAddress = async () => {
     try {
       const resp = await axiosPrivate.get(`/addresses/${address}`);
-
+      
       if (resp.status === 200) {
         setAddressInfo(resp.data);
       }
     } catch (error) {
-      toast.error("UNable to fetch address!");
+      toast.error("Unable to fetch address!");
     }
   };
+
+  // Function to add order
+  async function addOrder(event) {
+    event.preventDefault();
+    try {
+      const payload = {
+        quantity: quantity,
+        user: localStorage.getItem("userId"),
+        product: product.id,
+        address: addressInfo.id
+
+
+      }
+      const result = await axiosPrivate.post("/orders/", payload);
+      if (result.status === 201) {
+        toast.success(`Order Placed successfully`);
+        navigate("/");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   useEffect(() => {
     fetchAddress();
@@ -63,7 +85,7 @@ export const ActiveStepThree = ({ steps, setActiveStep, product, quantity, addre
         <div className="step-3-card step-3-address-details">
           <Typography variant="h5">Address:</Typography>
           <Typography variant="p">{addressInfo?.city}</Typography>
-          <Typography variant="p">Contact Number: {addressInfo?.contact}</Typography>
+          <Typography variant="p">Contact Number: {addressInfo?.contactNumber}</Typography>
           <Typography variant="p">{addressInfo?.street}</Typography>
           <Typography variant="p">{addressInfo?.state}</Typography>
           <Typography variant="p">{addressInfo?.zipcode}</Typography>
@@ -76,7 +98,8 @@ export const ActiveStepThree = ({ steps, setActiveStep, product, quantity, addre
         <Button
           variant="contained"
           className="button"
-          onClick={() => {
+          onClick={(event) => {
+            addOrder(event)
             toast.success("Order placed successfully!");
             return navigate("/");
           }}>
