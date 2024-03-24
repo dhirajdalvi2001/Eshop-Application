@@ -35,11 +35,9 @@ export const ActiveStepOne = ({
         disabled>
         {categoriesLoading ? (
           <div style={{ display: "flex", gap: "10px" }}>
-            {Array(3)
-              .fill("d")
-              .map((e) => {
-                return <Skeleton key={e} width={100} height={50} />;
-              })}
+            {Array("d", "e", "f").map((e) => {
+              return <Skeleton key={e} width={100} height={50} />;
+            })}
           </div>
         ) : (
           categories?.map((category) => {
@@ -112,7 +110,7 @@ export const ActiveStepOne = ({
             type="number"
             label="Enter Quantity"
             value={quantity}
-            onChange={(e) => setQuantity(e.target.value, "quantity")}
+            onChange={(e) => setQuantity(parseInt(e.target.value))}
             placeholder="Enter Quantity"
             size="small"
             required
