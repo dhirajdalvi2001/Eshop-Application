@@ -49,7 +49,7 @@ export const ActiveStepTwo = ({ steps, setActiveStep, selectedAdress, setSelecte
         zipcode: formData.get("zipcode"),
         user: localStorage.getItem("userId")
       });
-      
+
       if (resp.status === 201) {
         // const addressId = resp.data.id;
         // setAddresses([

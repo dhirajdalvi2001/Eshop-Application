@@ -15,7 +15,7 @@ export const ActiveStepThree = ({ steps, setActiveStep, product, quantity, addre
   const fetchAddress = async () => {
     try {
       const resp = await axiosPrivate.get(`/addresses/${address}`);
-      
+
       if (resp.status === 200) {
         setAddressInfo(resp.data);
       }
@@ -33,9 +33,7 @@ export const ActiveStepThree = ({ steps, setActiveStep, product, quantity, addre
         user: localStorage.getItem("userId"),
         product: product.id,
         address: addressInfo.id
-
-
-      }
+      };
       const result = await axiosPrivate.post("/orders/", payload);
       if (result.status === 201) {
         toast.success(`Order Placed successfully`);
@@ -99,7 +97,7 @@ export const ActiveStepThree = ({ steps, setActiveStep, product, quantity, addre
           variant="contained"
           className="button"
           onClick={(event) => {
-            addOrder(event)
+            addOrder(event);
             toast.success("Order placed successfully!");
             return navigate("/");
           }}>

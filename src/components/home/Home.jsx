@@ -176,11 +176,9 @@ export const Home = () => {
         }}>
         {categoriesLoading ? (
           <div style={{ display: "flex", gap: "10px" }}>
-            {Array(3)
-              .fill("d")
-              .map((e) => {
-                return <Skeleton key={e} width={100} height={50} />;
-              })}
+            {Array("d", "e", "f").map((e) => {
+              return <Skeleton key={e} width={100} height={50} />;
+            })}
           </div>
         ) : (
           // Displaying categories as toggle buttons
