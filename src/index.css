@@ -1,11 +1,12 @@
 :root {
   --blue: #3f51b5;
   --light-blue: #5c6bc0;
-  --red: #f50057;
-  --light-red: #ff2370;
+  --red: #f50057 !important;
+  --light-red: #ff2370 !important;
+  --toastify-color-error: #e74c3c !important;
   --toastify-color-success: #07bc0c !important;
-  --toastify-text-color-success: #07bc0c !important;
-  --toastify-color-light: #07bc0c !important;
+  --toastify-text-color-success: #fff !important;
+  --toastify-toast-background: #ff2370 !important;
   --toastify-text-color-light: #fff !important;
   --toastify-icon-color-success: #dadada !important;
 }

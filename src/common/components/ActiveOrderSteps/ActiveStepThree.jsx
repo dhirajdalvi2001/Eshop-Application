@@ -15,7 +15,6 @@ export const ActiveStepThree = ({ steps, setActiveStep, product, quantity, addre
   const fetchAddress = async () => {
     try {
       const resp = await axiosPrivate.get(`/addresses/${address}`);
-
       if (resp.status === 200) {
         setAddressInfo(resp.data);
       }

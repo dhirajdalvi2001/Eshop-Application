@@ -8,7 +8,13 @@ import "./index.css";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <>
-    <ToastContainer closeOnClick limit={1} hideProgressBar autoClose={2000} />
+    <ToastContainer
+      closeOnClick
+      limit={1}
+      hideProgressBar={false}
+      autoClose={2000}
+      theme="colored"
+    />
     <RouterProvider router={router} />
   </>
 );

@@ -122,8 +122,12 @@ export const ActiveStepOne = ({
             className="button"
             sx={{ marginTop: "24px", width: "fit-content" }}
             onClick={() => {
-              if (quantity > product.availableItems) {
-                toast.error("Invalid Quantity selected!");
+              if (!quantity || quantity === 0 || quantity > product.availableItems) {
+                toast.error("Invalid Quantity selected!", {
+                  className: {
+                    background: "#222"
+                  }
+                });
                 return;
               }
               setActiveStep(2);

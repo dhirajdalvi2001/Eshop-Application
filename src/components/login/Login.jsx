@@ -21,19 +21,23 @@ const Login = () => {
     const formData = new FormData(event.currentTarget);
 
     // Making a POST request to sign in endpoint
-    const result = await customFetch.post("/auth/signin", {
-      username: formData.get("email"),
-      password: formData.get("password")
-    });
+    try {
+      const result = await customFetch.post("/auth/signin", {
+        username: formData.get("email"),
+        password: formData.get("password")
+      });
 
-    if (result.status === 200) {
-      //Setting the token
-      setTokenCookie(result.headers["x-auth-token"]);
-      localStorage.setItem("userId", result.data.id);
-      localStorage.setItem("email", result.data.email);
-      localStorage.setItem("isAdmin", result.data.roles[0] === "ADMIN");
-      toast.success("User logged in successfully");
-      navigate("/");
+      if (result.status === 200) {
+        //Setting the token
+        setTokenCookie(result.headers["x-auth-token"]);
+        localStorage.setItem("userId", result.data.id);
+        localStorage.setItem("email", result.data.email);
+        localStorage.setItem("isAdmin", result.data.roles[0] === "ADMIN");
+        toast.success("User logged in successfully");
+        navigate("/");
+      }
+    } catch (error) {
+      toast.error("Invalid credentials!");
     }
   };
 
@@ -100,7 +104,7 @@ const Login = () => {
         </Box>
       </Box>
 
-      <Copyright sx={{ mt: 8, mb: 4 }} />
+      <Copyright sx={{ mt: 14, mb: 4 }} />
     </Container>
   );
 };
